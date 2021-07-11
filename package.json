@@ -1,5 +1,5 @@
 {
-  "name": "wormhole-js-utils",
+  "name": "wormhole-stc",
   "scripts": {
     "version": "lerna version",
     "pub": "lerna publish from-git"

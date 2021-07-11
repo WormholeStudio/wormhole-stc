@@ -1,11 +1,11 @@
 {
-  "name": "@wormhole-js-utils/txn-wrapper",
+  "name": "@wormhole-stc/txn-wrapper",
   "version": "1.0.1",
   "description": "Wrapper SendUncheckedTransaction Params",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/WormholeStudio/js-utils.git",
+    "url": "https://github.com/WormholeStudio/wormhole-stc.git",
     "directory": "packages/TxnWrapper"
   },
   "keywords": [
