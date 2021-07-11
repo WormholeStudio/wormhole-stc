@@ -18,7 +18,6 @@
   },
   "author": "wh-sadalmeliksadalmelik@wormhole.studio",
   "license": "MIT",
-  "private": false,
   "dependencies": {
     "@ethersproject/bytes": "^5.4.0",
     "@starcoin/starcoin": "^1.4.0",
