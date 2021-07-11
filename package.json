@@ -1,0 +1,14 @@
+{
+  "name": "wormhole-js-utils",
+  "private": true,
+  "scripts": {
+    "version": "lerna version",
+    "pub": "lerna publish from-git"
+  },
+  "workspaces": [
+    "package/*"
+  ],
+  "devDependencies": {
+    "lerna": "^4.0.0"
+  }
+}

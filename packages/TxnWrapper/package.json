@@ -1,0 +1,27 @@
+{
+  "name": "@wormhole-js-utils/txn-wrapper",
+  "version": "1.0.0",
+  "description": "Wrapper SendUncheckedTransaction Params",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/WormholeStudio/js-utils.git",
+    "directory": "packages/TxnWrapper"
+  },
+  "keywords": [
+    "starcoin",
+    "transaction",
+    "starmask"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "wh-sadalmelik",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "@ethersproject/bytes": "^5.4.0",
+    "@starcoin/starcoin": "^1.4.0",
+    "key-mirror": "^1.0.1"
+  }
+}
