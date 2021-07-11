@@ -1,6 +1,6 @@
 {
   "packages": ["package/*"],
   "useWorkspaces": true,
-  "npmClinet": "yarn",
-  "version": "0.0.0"
+  "npmClinet": "pnpm",
+  "version": "1.0.0"
 }

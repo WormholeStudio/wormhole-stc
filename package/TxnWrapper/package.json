@@ -16,12 +16,11 @@
   "publishConfig": {
     "access": "public"
   },
-  "author": "wh-sadalmeliksadalmelik@wormhole.studio",
+  "author": "sadalmelik@wormhole.studio",
   "license": "MIT",
-  "private": false,
   "dependencies": {
     "@ethersproject/bytes": "^5.4.0",
-    "@starcoin/starcoin": "^1.4.0",
+    "@starcoin/starcoin": "^1.4.2",
     "key-mirror": "^1.0.1"
   }
 }

@@ -1,6 +1,5 @@
 {
   "name": "wormhole-js-utils",
-  "private": "true",
   "scripts": {
     "version": "lerna version",
     "pub": "lerna publish from-git"
