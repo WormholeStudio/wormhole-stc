@@ -2,10 +2,12 @@ import { arrayify, hexlify } from '@ethersproject/bytes';
 import { providers, utils, bcs } from '@starcoin/starcoin';
 import KeyMirror from 'key-mirror';
 
+let starcoinProvider;
+
 if (window.starcoin) {
-  const starcoinProvider = new providers.Web3Provider(window.starcoin, 'any');
+  starcoinProvider = new providers.Web3Provider(window.starcoin, 'any');
 } else {
-  throw new Error('[TxnWrapper] Has no window.starcoin! Maybe Install the starmask!');
+  console.error('[TxnWrapper] Has no window.starcoin! Maybe Install the starmask!');
 }
 
 // Data Type to Serialize Type
@@ -16,7 +18,8 @@ export const TXN_PARAMS_TYPE = KeyMirror({
   U64: null,
   U128: null,
   Str: null,
-  Vector: null,
+  'vector<u8>': null,
+  'vector<vector<u8>>': null,
 });
 
 /**
@@ -30,7 +33,7 @@ export const SerizalWithType = (params) => {
     const se = new bcs.BcsSerializer();
 
     // For Vector<Vector<u8>>
-    if (type === TXN_PARAMS_TYPE.Vector) {
+    if (type === TXN_PARAMS_TYPE['vector<vector<u8>>']) {
       if (Array.isArray(value)) {
         se.serializeLen(value.length);
         value.forEach((sub) => {
@@ -46,8 +49,14 @@ export const SerizalWithType = (params) => {
       }
     }
 
+    if (type === TXN_PARAMS_TYPE['vector<u8>']) {
+      se.serializeStr(value);
+      const hex = hexlify(se.getBytes());
+      return arrayify(hex);
+    }
+
     // For normal data type
-    if (TXN_PARAMS_TYPE[type]) {
+    else if (TXN_PARAMS_TYPE[type]) {
       se[`serialize${type}`](value);
       const hex = hexlify(se.getBytes());
       return arrayify(hex);
