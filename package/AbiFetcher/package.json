@@ -1,6 +1,6 @@
 {
   "name": "@wormhole-stc/abi-fetcher",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Abi fetcher and Contract function map generator",
   "main": "./src/index.js",
   "repository": {
