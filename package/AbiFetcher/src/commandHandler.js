@@ -1,18 +1,17 @@
 const path = require('path');
 const fs = require('fs-extra');
-const abiFetcher = require('./fetcher');
 const { SuccessMessage, ErrorMessage, CONFIG_FILE_NAME } = require('./tools');
 
 /**
  * Init config file
  */
 const init = () => {
-  const confirFile = path.resolve(CONFIG_FILE_NAME);
-  if (!fs.existsSync(confirFile)) {
-    fs.copySync(path.resolve(__dirname, '../config/' + CONFIG_FILE_NAME), confirFile);
+  const configFile = path.resolve(CONFIG_FILE_NAME);
+  if (!fs.existsSync(configFile)) {
+    fs.copySync(path.resolve(__dirname, '../config/' + CONFIG_FILE_NAME), configFile);
     console.log(SuccessMessage('Config file created.'));
   } else {
-    console.log(ErrorMessage(`${confirFile} already exists`));
+    console.log(ErrorMessage(`${configFile} already exists`));
   }
 };
 
@@ -21,6 +20,7 @@ const init = () => {
  */
 const run = () => {
   const { modules } = require(path.resolve(CONFIG_FILE_NAME));
+  const abiFetcher = require('./fetcher');
   if (Array.isArray(modules)) {
     abiFetcher(modules);
   } else {

@@ -1,8 +1,6 @@
 {
-  "packages": [
-    "package/*"
-  ],
+  "packages": ["package/*"],
   "useWorkspaces": true,
   "npmClinet": "pnpm",
-  "version": "1.0.6"
+  "version": "independent"
 }

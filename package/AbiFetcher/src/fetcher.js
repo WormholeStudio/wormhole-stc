@@ -11,8 +11,8 @@ const {
   SPLIT_SYMBOL,
   CONNECTOR,
 } = require('./tools');
-const { providerUrl, output } = require(path.resolve(CONFIG_FILE_NAME));
 
+const { providerUrl, output } = require(path.resolve(CONFIG_FILE_NAME));
 const { JsonRpcProvider } = providers;
 
 const outputDir = output || path.resolve('./src/abis');
@@ -103,21 +103,25 @@ const fetcher = (modules) => {
     },
   )
     .then((res) => {
-      writeIndexFile(
-        res
-          .map(
-            (abiJsonFileName) =>
-              `export * as ${abiJsonFileName
-                .replace(/\.json$/, '')
-                .replace(CONNECTOR, '')
-                .split(SPLIT_SYMBOL)
-                .reverse()
-                .join('In')} from './${abiJsonFileName}';\n`,
-          )
-          .join(''),
-      );
-      res.map((name) => console.log(SuccessMessage(`${name} has been created`)));
-      console.log(SuccessMessage('All abi json files have been created!'));
+      if (Array.isArray(res) && res.length > 0) {
+        writeIndexFile(
+          res
+            .map(
+              (abiJsonFileName) =>
+                `export * as ${abiJsonFileName
+                  .replace(/\.json$/, '')
+                  .replace(CONNECTOR, '')
+                  .split(SPLIT_SYMBOL)
+                  .reverse()
+                  .join('In')} from './${abiJsonFileName}';\n`,
+            )
+            .join(''),
+        );
+        res.map((name) => console.log(SuccessMessage(`${name} has been created`)));
+        console.log(SuccessMessage('All abi json files have been created!'));
+      } else {
+        console.log(ErrorMessage('No abi json files have been created!'));
+      }
     })
     .catch((err) => {
       console.log(err);
