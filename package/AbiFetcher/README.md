@@ -13,7 +13,7 @@ $ pnpm i @wormhole/abi-fetcher -S
 You can create a `abi-fetcher.config.js` at project root path or use this commmand:
 
 ```shell
-$ abi-fetcher init
+$ ./node_modules/.bin/abi-fetcher init
 ```
 
 `abi-fetcher.config.js` will looks like this:
@@ -33,7 +33,7 @@ module.exports = {
 After `abi-fetcher.config.js` has been set, then use this command to fetch all abis config:
 
 ```shell
-$ abi-fetcher run
+$ ./node_modules/.bin/abi-fetcher run
 ```
 
 As default, all abis config file will be created at `./src/abis`

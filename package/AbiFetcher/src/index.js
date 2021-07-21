@@ -1,1 +1,5 @@
-export * as AbiPlugin from '../plugin/index.js';
+const AbiPlugin = require('../plugin/index').default;
+
+module.exports = {
+  AbiPlugin,
+};

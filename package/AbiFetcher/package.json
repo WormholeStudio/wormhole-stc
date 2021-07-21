@@ -2,7 +2,7 @@
   "name": "@wormhole-stc/abi-fetcher",
   "version": "1.0.5",
   "description": "Abi fetcher and Contract function map generator",
-  "main": "index.js",
+  "main": "./src/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/WormholeStudio/wormhole-stc.git",
