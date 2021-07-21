@@ -1,0 +1,32 @@
+{
+  "name": "@wormhole-stc/abi-fetcher",
+  "version": "1.0.0",
+  "description": "Abi fetcher and Contract function map generator",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/WormholeStudio/wormhole-stc.git",
+    "directory": "packages/AbiFetcher"
+  },
+  "bin": {
+    "abi-fetcher": "./bin/abi-fetcher.js"
+  },
+  "keywords": [
+    "starcoin",
+    "transaction",
+    "abi",
+    "starmask"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "sadalmelik@wormhole.studio",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "bluebird": "^3.7.2",
+    "chalk": "^4.1.1",
+    "commander": "^8.0.0",
+    "fs-extra": "^10.0.0"
+  }
+}
