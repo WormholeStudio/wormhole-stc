@@ -87,7 +87,7 @@ export const SerizalWithType = (params) => {
 const TxnWrapper = async ({
   // Function Name on Contract
   functionId = '',
-  // Function return type
+  // Function type tag
   typeTag = [],
   /**
    *  Function's Params

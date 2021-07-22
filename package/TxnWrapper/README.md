@@ -19,9 +19,9 @@ const txn = async () => {
     return await TxnWrapper({
       // function name
       functionId: '0x1::ModuleName:FunctionName',
-      // function return type
+      // function type tag
       // support string or array
-      returnType: '0x1::STC:STC',
+      typeTag: '0x1::STC:STC',
       // function params
       // obey function params order
       // support all basic param type
@@ -37,6 +37,11 @@ const txn = async () => {
         {
           value: merkle_root,
           type: TXN_PARAMS_TYPE['vector<u8>'],
+        },
+        // vector<u128>
+        {
+          value: [123456, 567890],
+          type: TXN_PARAMS_TYPE['vector<u128>'],
         },
         {
           value: proof,
