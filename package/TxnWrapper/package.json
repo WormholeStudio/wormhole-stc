@@ -1,6 +1,6 @@
 {
   "name": "@wormhole-stc/txn-wrapper",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Wrapper SendUncheckedTransaction Params",
   "main": "index.js",
   "repository": {
