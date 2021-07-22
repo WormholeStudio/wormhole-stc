@@ -10,6 +10,10 @@ if (window.starcoin) {
   console.error('[TxnWrapper] Has no window.starcoin! Maybe Install the starmask!');
 }
 
+const UpperCaseFirst = (str) => {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};
+
 // Data Type to Serialize Type
 export const TXN_PARAMS_TYPE = KeyMirror({
   U8: null,
@@ -19,6 +23,10 @@ export const TXN_PARAMS_TYPE = KeyMirror({
   U128: null,
   Str: null,
   'vector<u8>': null,
+  'vector<u16>': null,
+  'vector<u32>': null,
+  'vector<u64>': null,
+  'vector<u128>': null,
   'vector<vector<u8>>': null,
 });
 
@@ -32,31 +40,40 @@ export const SerizalWithType = (params) => {
     const { value = '', type = '' } = params;
     const se = new bcs.BcsSerializer();
 
-    // For Vector<Vector<u8>>
-    if (type === TXN_PARAMS_TYPE['vector<vector<u8>>']) {
-      if (Array.isArray(value)) {
-        se.serializeLen(value.length);
-        value.forEach((sub) => {
-          const innerSE = new bcs.BcsSerializer();
-          innerSE.serializeStr(sub);
-          const hexedStr = hexlify(innerSE.getBytes());
-          se.serializeLen(hexedStr.length / 2 - 1);
-          se.serializeStr(sub);
-        });
-        return arrayify(hexlify(se.getBytes()));
-      } else {
-        throw new Error(`[TxnWrapper] ${type} need value as an array!`);
-      }
-    }
-
     if (type === TXN_PARAMS_TYPE['vector<u8>']) {
       se.serializeStr(value);
       const hex = hexlify(se.getBytes());
       return arrayify(hex);
     }
 
+    const typeInVector = type.match(/vector<(.+)>/);
+    if (typeInVector && Array.isArray(value)) {
+      const [originStr, realType] = typeInVector;
+
+      se.serializeLen(value.length);
+      value.forEach((sub) => {
+        const innerSE = new bcs.BcsSerializer();
+
+        // 字符串的数组 vector<vector<u8>>
+        if (realType === 'vector<u8>') {
+          innerSE[`serializeStr`](sub);
+        } else {
+          // 其他类型的数组 vector<u8>
+          se[`serialize${UpperCaseFirst(realType)}`](sub);
+        }
+
+        const hexedStr = hexlify(innerSE.getBytes());
+        // 字符串的数组 vector<vector<u8>>
+        if (realType === 'vector<u8>') {
+          se.serializeLen(hexedStr.length / 2 - 1);
+          se.serializeStr(sub);
+        }
+      });
+      return arrayify(hexlify(se.getBytes()));
+    }
+
     // For normal data type
-    else if (TXN_PARAMS_TYPE[type]) {
+    if (TXN_PARAMS_TYPE[type]) {
       se[`serialize${type}`](value);
       const hex = hexlify(se.getBytes());
       return arrayify(hex);
