@@ -88,7 +88,7 @@ const TxnWrapper = async ({
   // Function Name on Contract
   functionId = '',
   // Function return type
-  returnType = [],
+  typeTag = [],
   /**
    *  Function's Params
    *  [ {value: '', type: TXN_PARAMS_TYPE} ]
@@ -104,7 +104,7 @@ const TxnWrapper = async ({
     utils.tx
       .encodeScriptFunction(
         functionId,
-        utils.tx.encodeStructTypeTags(Array.isArray(returnType) ? returnType : [returnType]),
+        typeTag ? utils.tx.encodeStructTypeTags(Array.isArray(typeTag) ? typeTag : [typeTag]) : [],
         args,
       )
       .serialize(se);
