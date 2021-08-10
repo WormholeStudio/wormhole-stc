@@ -27,31 +27,28 @@ export const SerizalWithType = (params = { value: '', type: '' }) => {
 
   const se = new bcs.BcsSerializer();
 
-  if (type?.Vector === 'U8') {
+  if (type && type.Vector === 'U8') {
     se.serializeStr(value);
     const hex = hexlify(se.getBytes());
     return arrayify(hex);
   }
 
-  const typeInVector = type.match(/vector<(.+)>/);
-  if (type?.Vector && Array.isArray(value)) {
-    const [originStr, realType] = typeInVector;
-
+  if (type && type.Vector && Array.isArray(value)) {
     se.serializeLen(value.length);
     value.forEach((sub) => {
       const innerSE = new bcs.BcsSerializer();
 
       // 字符串的数组 vector<vector<u8>>
-      if (type?.Vector?.Vector === 'U8') {
+      if (type.Vector.Vector === 'U8') {
         innerSE[`serializeStr`](sub);
-      } else if (type?.Vector) {
+      } else if (type.Vector) {
         // 其他类型的数组 vector<u8>
         se[`serialize${type.Vector}`](sub);
       }
 
       const hexedStr = hexlify(innerSE.getBytes());
       // 字符串的数组 vector<vector<u8>>
-      if (type?.Vector?.Vector === 'U8') {
+      if (type.Vector.Vector === 'U8') {
         se.serializeLen(hexedStr.length / 2 - 1);
         se.serializeStr(sub);
       }
@@ -91,7 +88,7 @@ const TxnWrapper = async ({
     ]);
 
     // Remove the first Signer type
-    if (functionResolve[0]?.type_tag === 'Signer') {
+    if (functionResolve[0] && functionResolve[0]e.type_tag === 'Signer') {
       functionResolve.shift();
     }
 

@@ -11,7 +11,7 @@ $ pnpm i @wormhole/txn-wrapper -S
 In files
 
 ```javascript
-import TxnWrapperfrom '@wormhole-stc/txn-wrapper';
+import TxnWrapper from '@wormhole-stc/txn-wrapper';
 
 const txn = async () => {
   try {
@@ -24,17 +24,7 @@ const txn = async () => {
       typeTag: '0x1::STC:STC',
       // function params
       // obey function params order
-      params: [
-        // support raw value
-        'address',
-        // u64
-         airdrop_id,
-        // vector<u8>
-         merkle_root,
-        // vector<u128>
-        [123456, 567890],
-        proof,
-      ],
+      params: ['address', airdrop_id, merkle_root, [123456, 567890], proof],
     });
   } catch (err) {
     console.log(err);
