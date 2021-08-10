@@ -3,85 +3,70 @@ import { providers, utils, bcs } from '@starcoin/starcoin';
 import KeyMirror from 'key-mirror';
 
 let starcoinProvider;
+let jsonProvider;
+
+const PROVIDER_URL_MAP = {
+  1: 'https://main-seed.starcoin.org',
+  251: 'https://barnard-seed.starcoin.org',
+};
 
 if (window.starcoin) {
   starcoinProvider = new providers.Web3Provider(window.starcoin, 'any');
+  jsonProvider = () =>
+    new providers.JsonRpcProvider(PROVIDER_URL_MAP[window.starcoin.networkVersion]);
 } else {
   console.error('[TxnWrapper] Has no window.starcoin! Maybe Install the starmask!');
 }
 
-const UpperCaseFirst = (str) => {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-};
-
-// Data Type to Serialize Type
-export const TXN_PARAMS_TYPE = KeyMirror({
-  U8: null,
-  U16: null,
-  U32: null,
-  U64: null,
-  U128: null,
-  Str: null,
-  'vector<u8>': null,
-  'vector<u16>': null,
-  'vector<u32>': null,
-  'vector<u64>': null,
-  'vector<u128>': null,
-  'vector<vector<u8>>': null,
-});
-
 /**
  * 带类型的数据变换
  */
-export const SerizalWithType = (params) => {
-  if (typeof params === 'string') return arrayify(params);
+export const SerizalWithType = (params = { value: '', type: '' }) => {
+  const { value = '', type = '' } = params;
+  if (type === 'Address') return arrayify(value);
 
-  if (typeof params === 'object') {
-    const { value = '', type = '' } = params;
-    const se = new bcs.BcsSerializer();
+  const se = new bcs.BcsSerializer();
 
-    if (type === TXN_PARAMS_TYPE['vector<u8>']) {
-      se.serializeStr(value);
-      const hex = hexlify(se.getBytes());
-      return arrayify(hex);
-    }
-
-    const typeInVector = type.match(/vector<(.+)>/);
-    if (typeInVector && Array.isArray(value)) {
-      const [originStr, realType] = typeInVector;
-
-      se.serializeLen(value.length);
-      value.forEach((sub) => {
-        const innerSE = new bcs.BcsSerializer();
-
-        // 字符串的数组 vector<vector<u8>>
-        if (realType === 'vector<u8>') {
-          innerSE[`serializeStr`](sub);
-        } else {
-          // 其他类型的数组 vector<u8>
-          se[`serialize${UpperCaseFirst(realType)}`](sub);
-        }
-
-        const hexedStr = hexlify(innerSE.getBytes());
-        // 字符串的数组 vector<vector<u8>>
-        if (realType === 'vector<u8>') {
-          se.serializeLen(hexedStr.length / 2 - 1);
-          se.serializeStr(sub);
-        }
-      });
-      return arrayify(hexlify(se.getBytes()));
-    }
-
-    // For normal data type
-    if (TXN_PARAMS_TYPE[type]) {
-      se[`serialize${type}`](value);
-      const hex = hexlify(se.getBytes());
-      return arrayify(hex);
-    }
-    return value;
+  if (type?.Vector === 'U8') {
+    se.serializeStr(value);
+    const hex = hexlify(se.getBytes());
+    return arrayify(hex);
   }
 
-  return null;
+  const typeInVector = type.match(/vector<(.+)>/);
+  if (type?.Vector && Array.isArray(value)) {
+    const [originStr, realType] = typeInVector;
+
+    se.serializeLen(value.length);
+    value.forEach((sub) => {
+      const innerSE = new bcs.BcsSerializer();
+
+      // 字符串的数组 vector<vector<u8>>
+      if (type?.Vector?.Vector === 'U8') {
+        innerSE[`serializeStr`](sub);
+      } else if (type?.Vector) {
+        // 其他类型的数组 vector<u8>
+        se[`serialize${type.Vector}`](sub);
+      }
+
+      const hexedStr = hexlify(innerSE.getBytes());
+      // 字符串的数组 vector<vector<u8>>
+      if (type?.Vector?.Vector === 'U8') {
+        se.serializeLen(hexedStr.length / 2 - 1);
+        se.serializeStr(sub);
+      }
+    });
+    return arrayify(hexlify(se.getBytes()));
+  }
+
+  // For normal data type
+  if (type) {
+    se[`serialize${type}`](value);
+    const hex = hexlify(se.getBytes());
+    return arrayify(hex);
+  }
+
+  return value;
 };
 
 const TxnWrapper = async ({
@@ -91,14 +76,31 @@ const TxnWrapper = async ({
   typeTag = [],
   /**
    *  Function's Params
-   *  [ {value: '', type: TXN_PARAMS_TYPE} ]
+   *  [ param_1, param_2, ... ]
    */
   params = [],
   gasLimit = 20000000,
   gasPrice = 1,
 }) => {
+  if (!functionId) throw new Error('[TxnWrapper] TxnWrapper must has fucntionId');
+
   try {
-    const args = params.map((p) => SerizalWithType(p));
+    // Get function resolve
+    const { args: functionResolve } = await jsonProvider().send('contract.resolve_function', [
+      functionId,
+    ]);
+
+    // Remove the first Signer type
+    if (functionResolve[0]?.type_tag === 'Signer') {
+      functionResolve.shift();
+    }
+
+    const args = params.map((value, index) =>
+      SerizalWithType({
+        value,
+        type: functionResolve[index].type_tag,
+      }),
+    );
 
     const se = new bcs.BcsSerializer();
     utils.tx
