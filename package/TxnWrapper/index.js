@@ -88,7 +88,7 @@ const TxnWrapper = async ({
     ]);
 
     // Remove the first Signer type
-    if (functionResolve[0] && functionResolve[0]e.type_tag === 'Signer') {
+    if (functionResolve[0] && functionResolve[0].type_tag === 'Signer') {
       functionResolve.shift();
     }
 
