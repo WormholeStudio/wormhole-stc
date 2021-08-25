@@ -1,6 +1,5 @@
 import { arrayify, hexlify } from '@ethersproject/bytes';
 import { providers, utils, bcs } from '@starcoin/starcoin';
-import KeyMirror from 'key-mirror';
 
 let starcoinProvider;
 let jsonProvider;
@@ -8,12 +7,13 @@ let jsonProvider;
 const PROVIDER_URL_MAP = {
   1: 'https://main-seed.starcoin.org',
   251: 'https://barnard-seed.starcoin.org',
+  253: 'https://halley-seed.starcoin.org',
 };
 
 if (window.starcoin) {
   starcoinProvider = new providers.Web3Provider(window.starcoin, 'any');
-  jsonProvider = () =>
-    new providers.JsonRpcProvider(PROVIDER_URL_MAP[window.starcoin.networkVersion]);
+  jsonProvider = (url) =>
+    new providers.JsonRpcProvider(url || PROVIDER_URL_MAP[window.starcoin.networkVersion]);
 } else {
   console.error('[TxnWrapper] Has no window.starcoin! Maybe Install the starmask!');
 }
@@ -121,5 +121,7 @@ const TxnWrapper = async ({
     throw new Error(error.message);
   }
 };
+
+export const JsonProvider = jsonProvider;
 
 export default TxnWrapper;
